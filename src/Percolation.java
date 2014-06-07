@@ -1,9 +1,10 @@
 /**
- *
+ * Created by webserg on 07.06.2014.
+ *  To model a percolation system
  */
 public class Percolation {
     int[][] grid;
-    QuickFindUF uf;
+    WeightedQuickUnionUF uf;
     final int N;
     int top;
     int bottom;
@@ -19,14 +20,14 @@ public class Percolation {
     public Percolation(int n) {
         N = n;
         grid = new int[N][N];
-        uf = new QuickFindUF(N * N + 2);
-        top = N * N + 1;
-        bottom = N * N + 2;
+        uf = new WeightedQuickUnionUF(N * N + 2);
+        top = N * N ;
+        bottom = N * N + 1;
         for (int i = 0; i < N; i++) {
             uf.union(top, seed(0, i));
         }
         for (int i = 0; i < N; i++) {
-            uf.union(bottom, seed(i, 0));
+            uf.union(bottom, seed(N-1, i));
         }
     }
 
