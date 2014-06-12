@@ -1,4 +1,4 @@
-import java.util.Arrays;
+import java.util.*;
 
 public class Fast {
     public static void main(String[] args) {
@@ -16,40 +16,44 @@ public class Fast {
     }
 
     private static void findAndDrawCollinear(Point[] points) {
-        for (int j = 0; j < points.length; j++) {
-            Point mainPoint = points[j];
-            Point[] others = Arrays.copyOfRange(points, 1, points.length);
-            Arrays.sort(others, mainPoint.SLOPE_ORDER);
-//            for (int i = 0; i < others.length; i++) {
-//                System.out.println(p.slopeTo(others[i]));
-//            }
-            for (int i = 0, k = 1; i < others.length - 1; i++) {
-                if (mainPoint.slopeTo(others[i]) == mainPoint.slopeTo(others[i + 1])) {
-                    k++;
+        List<Point> list = Arrays.asList(points);
+        for (int i = 0; i < list.size(); i++) {
+            List<Point> other = new ArrayList<>(list);
+            other.remove(i);
+            Point mainpoint = list.get(i);
+            Collections.sort(other, mainpoint.SLOPE_ORDER);
+            ListIterator<Point> iter = other.listIterator();
+            double slope = mainpoint.slopeTo(iter.next());
+            List<Point> segment = new ArrayList<>();
+            while (iter.hasNext()) {
+                Point p = iter.next();
+                if (slope == mainpoint.slopeTo(p)) {
+                    segment.add(p);
+
                 } else {
-
-                    if (k >= 3) {
-                        i++;
-                        Point[] segment = (Arrays.copyOfRange(others, i - k, i));
-                        Arrays.sort(segment);
-                        System.out.print(mainPoint);
-                        for (int y = 0; y < segment.length; y++) {
-                            System.out.print(" -> ");
-                            System.out.print(points[y]);
-                            if (y == 0) {
-                                mainPoint.drawTo(segment[y]);
-                            } else if (y < segment.length - 1) {
-                                segment[y].drawTo(segment[y + 1]);
-                            }
-
-                        }
-
-                        System.out.println();
+                    slope = mainpoint.slopeTo(p);
+                    if (segment.size() > 2) {
+                        segment.add(mainpoint);
+                        drawSegment(segment);
                     }
-                    k = 1;
-
+                    segment.clear();
                 }
             }
         }
+
     }
+
+    public static void drawSegment(List<Point> segment) {
+        Collections.sort(segment);
+        for (int i = 0; i < segment.size(); i++) {
+            if (i != 0) System.out.print(" -> ");
+            System.out.print(segment.get(i));
+
+        }
+        for (int i = 0; i < segment.size() - 1; i++) {
+            segment.get(i).drawTo(segment.get(i + 1));
+        }
+        System.out.println();
+    }
+
 }
