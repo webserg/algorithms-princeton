@@ -1,5 +1,6 @@
 /**
  * Created by webserg on 07.06.2014.
+ * usage PercolationStats N T
  */
 public class PercolationStats {
     private final int N;
@@ -60,7 +61,7 @@ public class PercolationStats {
 
     public static void main(String[] args) {
         if (args.length != 2) {
-            StdOut.println("Wrong number of arguments. Usage:");
+            StdOut.println("Wrong arguments. Usage:");
             StdOut.println("  java PercolationStats N T");
         } else {
             int N = Integer.parseInt(args[0]);
