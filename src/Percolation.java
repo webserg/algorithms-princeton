@@ -1,6 +1,6 @@
 /**
  * Created by webserg on 07.06.2014.
- *  To model a percolation system
+ * To model a percolation system
  */
 public class Percolation {
     int[][] grid;
@@ -21,13 +21,13 @@ public class Percolation {
         N = n;
         grid = new int[N][N];
         uf = new WeightedQuickUnionUF(N * N + 2);
-        top = N * N ;
+        top = N * N;
         bottom = N * N + 1;
         for (int i = 0; i < N; i++) {
             uf.union(top, seed(0, i));
         }
         for (int i = 0; i < N; i++) {
-            uf.union(bottom, seed(N-1, i));
+            uf.union(bottom, seed(N - 1, i));
         }
     }
 
@@ -38,7 +38,7 @@ public class Percolation {
      * @param j number
      */
     public void open(int i, int j) {
-        idxCheck(i,j);
+        idxCheck(i, j);
         if (grid[i][j] == CLOSE) {
             grid[i][j] = OPEN;
             int cur = seed(i, j);
@@ -58,7 +58,7 @@ public class Percolation {
     }
 
     private int seed(int i, int j) {
-        idxCheck(i,j);
+        idxCheck(i, j);
         return N * i + j;
     }
 
@@ -70,7 +70,7 @@ public class Percolation {
      * @return boolean
      */
     public boolean isOpen(int i, int j) {
-        idxCheck(i,j);
+        idxCheck(i, j);
         return grid[i][j] == OPEN;
     }
 
@@ -82,17 +82,17 @@ public class Percolation {
      * @return boolean
      */
     public boolean isFull(int i, int j) {
-        idxCheck(i,j);
+        idxCheck(i, j);
         return uf.connected(top, bottom) && uf.connected(top, seed(i, j));
     }
 
     /* Validate the indexes, throws an exception if not valid */
-    private void idxCheck(int i, int j){
+    private void idxCheck(int i, int j) {
         if (i < 0 || i > N || j < 0 || j > N)
             throw new IndexOutOfBoundsException("Position (" + i + ", " + j + ") out of bounds");
     }
 
-    public boolean percolates(){
+    public boolean percolates() {
         return uf.connected(top, bottom);
     }
 }

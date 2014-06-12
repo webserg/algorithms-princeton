@@ -41,7 +41,7 @@ public class Point implements Comparable<Point> {
     }
 
     // slope between this point and that point
-    public double slopeTo(Point that) {
+    public Double slopeTo(Point that) {
         double result = (double) (that.y - this.y) / (that.x - this.x);
 
         if (result == Double.NEGATIVE_INFINITY) {
@@ -60,7 +60,7 @@ public class Point implements Comparable<Point> {
             System.out.print(points[i]);
 
         }
-        for (int i = 0; i < points.length-1; i++) {
+        for (int i = 0; i < points.length - 1; i++) {
             points[i].drawTo(points[i + 1]);
         }
         System.out.println();
@@ -143,8 +143,6 @@ class PointComparator implements Comparator<Point> {
 
     @Override
     public int compare(Point o1, Point o2) {
-        if (p.slopeTo(o1) < p.slopeTo(o2)) return -1;
-        else if (p.slopeTo(o1) == p.slopeTo(o2)) return 0;
-        else return 1;
+        return (p.slopeTo(o1).compareTo(p.slopeTo(o2)));
     }
 }
