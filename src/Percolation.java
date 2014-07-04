@@ -3,14 +3,15 @@
  * To model a percolation system
  */
 public class Percolation {
-    int[][] grid;
-    WeightedQuickUnionUF uf;
-    final int N;
-    int top;
-    int bottom;
-
     private static final int OPEN = 1;
     private static final int CLOSE = 0;
+
+    private int[][] grid;
+    private WeightedQuickUnionUF uf;
+    private final int N;
+    private int top;
+
+    private int bottom;
 
     /**
      * create N-by-N grid, with all sites blocked
@@ -18,6 +19,7 @@ public class Percolation {
      * @param n number
      */
     public Percolation(int n) {
+        argCheck(n);
         N = n;
         grid = new int[N][N];
         uf = new WeightedQuickUnionUF(N * N + 2);
@@ -90,6 +92,11 @@ public class Percolation {
     private void idxCheck(int i, int j) {
         if (i < 0 || i > N || j < 0 || j > N)
             throw new IndexOutOfBoundsException("Position (" + i + ", " + j + ") out of bounds");
+    }
+
+    private void argCheck(int n) {
+        if (n <= 0)
+            throw new IllegalArgumentException(" N <= 0 ");
     }
 
     public boolean percolates() {

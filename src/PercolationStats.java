@@ -5,7 +5,7 @@
 public class PercolationStats {
     private final int N;
     private final int T;
-    double thresholdsOverTimes[];
+    private double[] thresholdsOverTimes;
 
     /**
      * perform T independent computational experiments on an N-by-N grid
