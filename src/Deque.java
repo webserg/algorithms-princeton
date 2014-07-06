@@ -1,9 +1,9 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class Deque<K> implements Iterable<K> {
-    private Node<K> head;
-    private Node<K> tail;
+public class Deque<Item> implements Iterable<Item> {
+    private Node<Item> head;
+    private Node<Item> tail;
     private int size = 0;
 
     public Deque() {
@@ -11,18 +11,18 @@ public class Deque<K> implements Iterable<K> {
     }
 
     // return an iterator over items in order from front to end
-    public Iterator<K> iterator() {
+    public Iterator<Item> iterator() {
         return new LinkedListIterator();
     }
 
     // is the deque empty?
     public boolean isEmpty() {
-        return getSize() == 0;
+        return size == 0;
     }
 
     // return the number of items on the deque
     public int size() {
-        return getSize();
+        return size;
     }
 
     // unit testing
@@ -73,30 +73,30 @@ public class Deque<K> implements Iterable<K> {
         }
     }
 
-    public void addLast(K k) {
-        Node<K> node = new Node<>(k);
+    public void addLast(Item item) {
+        Node<Item> node = new Node<>(item);
         if (head == null && tail == null) {
             head = tail = node;
         } else {
-            tail.next = node;
+            tail.setNext(node);
             tail = node;
         }
         size++;
     }
 
-    public void addFirst(K k) {
-        Node<K> node = new Node<>(k);
+    public void addFirst(Item item) {
+        Node<Item> node = new Node<>(item);
         if (head == null && tail == null) {
             head = tail = node;
         } else {
-            node.next = head;
+            node.setNext(head);
             head = node;
         }
         size++;
     }
 
-//    public boolean search(K k) {
-//        Node<K> cur = head;
+//    public boolean search(Item k) {
+//        Node<Item> cur = head;
 //        while (cur != null) {
 //            if (cur.data == k) return true;
 //            cur = cur.next;
@@ -104,36 +104,36 @@ public class Deque<K> implements Iterable<K> {
 //        return false;
 //    }
 
-    public K removeFirst() {
-        Node<K> tmp = null;
+    public Item removeFirst() {
+        Node<Item> tmp = null;
         if (head != null) {
             tmp = head;
-            head = head.next;
+            head = head.getNext();
         }
-        return tmp != null ? tmp.data : null;
+        return tmp != null ? tmp.getData() : null;
     }
 
-    public K removeLast() {
-        Node<K> tmp = null;
+    public Item removeLast() {
+        Node<Item> tmp = null;
         if (tail != null) {
             tmp = tail;
-            Node<K> cur = head;
-            Node<K> prev = null;
+            Node<Item> cur = head;
+            Node<Item> prev = null;
             while (cur != tail) {
                 prev = cur;
-                cur = cur.next;
+                cur = cur.getNext();
             }
             tail = prev;
             if (tail != null)
-                tail.next = null;
+                tail.setNext(null);
 
         }
-        return tmp != null ? tmp.data : null;
+        return tmp != null ? tmp.getData() : null;
     }
 
-//    public boolean delete(K k) {
-//        Node<K> cur = head;
-//        Node<K> prev = null;
+//    public boolean delete(Item k) {
+//        Node<Item> cur = head;
+//        Node<Item> prev = null;
 //        while (cur != null) {
 //            if (cur.data == k) {
 //                if (prev == null) {
@@ -153,22 +153,22 @@ public class Deque<K> implements Iterable<K> {
 //        return false;
 //    }
 
-    public String toString() {
-        Node<K> n = head;
-        StringBuilder s = new StringBuilder();
-        while (n != null) {
-            s.append(n.toString());
-            n = n.next;
-        }
-        return s.toString();
-    }
+//    private String toString() {
+//        Node<Item> n = head;
+//        StringBuilder s = new StringBuilder();
+//        while (n != null) {
+//            s.append(n.toString());
+//            n = n.getNext();
+//        }
+//        return s.toString();
+//    }
 
-    public int getSize() {
-        return size;
-    }
+//    public int getSize() {
+//        return size;
+//    }
 
-    class LinkedListIterator implements Iterator<K> {
-        Node<K> cur = head;
+    private class LinkedListIterator implements Iterator<Item> {
+        Node<Item> cur = head;
 
         @Override
         public boolean hasNext() {
@@ -176,11 +176,11 @@ public class Deque<K> implements Iterable<K> {
         }
 
         @Override
-        public K next() {
+        public Item next() {
             if (!hasNext()) throw new NoSuchElementException();
-            Node<K> tmp = cur;
-            cur = cur.next;
-            return tmp.data;
+            Node<Item> tmp = cur;
+            cur = cur.getNext();
+            return tmp.getData();
         }
 
         @Override
@@ -191,16 +191,31 @@ public class Deque<K> implements Iterable<K> {
 
 }
 
-class Node<K> {
-    K data;
-    Node<K> next;
+class Node<Item> {
+    private Item data;
+    private Node<Item> next;
 
-    Node(K data) {
+    Node(Item data) {
+        this.setData(data);
+    }
+
+//    private String toString() {
+//        return getData() + " ";
+//    }
+
+    public Item getData() {
+        return data;
+    }
+
+    public void setData(Item data) {
         this.data = data;
     }
 
-    @Override
-    public String toString() {
-        return data + " ";
+    public Node<Item> getNext() {
+        return next;
+    }
+
+    public void setNext(Node<Item> next) {
+        this.next = next;
     }
 }

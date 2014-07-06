@@ -41,7 +41,7 @@ public class Point implements Comparable<Point> {
     }
 
     // slope between this point and that point
-    public Double slopeTo(Point that) {
+    public double slopeTo(Point that) {
         double result = (double) (that.y - this.y) / (that.x - this.x);
 
         if (result == Double.NEGATIVE_INFINITY) {
@@ -51,19 +51,6 @@ public class Point implements Comparable<Point> {
         }
         return result;
 
-    }
-
-    public static void drawSegment(Point... points) {
-        Arrays.sort(points);
-        for (int i = 0; i < points.length; i++) {
-            if (i != 0) System.out.print(" -> ");
-            System.out.print(points[i]);
-
-        }
-        for (int i = 0; i < points.length - 1; i++) {
-            points[i].drawTo(points[i + 1]);
-        }
-        System.out.println();
     }
 
 
@@ -90,7 +77,7 @@ public class Point implements Comparable<Point> {
     // unit test
     public static void main(String[] args) {
         testFile();
-//        System.out.println(Arrays.toString(readInputFile("input6.txt")));
+        System.out.println(Arrays.toString(readInputFile("input6.txt")));
 //        System.out.println(Arrays.toString(readInputFile("input8.txt")));
     }
 
@@ -110,7 +97,7 @@ public class Point implements Comparable<Point> {
         System.out.println();
     }
 
-    static Point[] readInputFile(String name) {
+    private static Point[] readInputFile(String name) {
         In in;
         Point[] points = null;
         try {
@@ -143,6 +130,6 @@ class PointComparator implements Comparator<Point> {
 
     @Override
     public int compare(Point o1, Point o2) {
-        return (p.slopeTo(o1).compareTo(p.slopeTo(o2)));
+        return p.slopeTo(o1) < p.slopeTo(o2) ? -1 : p.slopeTo(o1) > p.slopeTo(o2) ? 1 : 0;
     }
 }
