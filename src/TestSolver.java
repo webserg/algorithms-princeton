@@ -6,13 +6,14 @@ import sun.invoke.empty.Empty;
 public class TestSolver {
     public static void main(String[] args) {
         // create initial board from file
-        In in = new In("puzzle04.txt");
+        In in = new In("puzzle-unsolvable3x3.txt");
         int N = in.readInt();
         int[][] blocks = new int[N][N];
+        final int EMPTY = 0;
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++) {
                 blocks[i][j] = in.readInt();
-                if(blocks[i][j] == 0) blocks[i][j] = N*N;
+                if(blocks[i][j] == 0) blocks[i][j] = EMPTY;
             }
         Board initial = new Board(blocks);
 

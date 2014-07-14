@@ -13,7 +13,7 @@ public class Board {
 
     public Board(final int[][] blocks) {
         N = blocks.length;
-        EMPTY = N * N;
+        EMPTY = 0;
         this.blocks = copyBoard(blocks);
     }
 
@@ -32,7 +32,7 @@ public class Board {
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++) {
                 int cur = seed(i, j);
-                if (cur + 1 != blocks[i][j] && blocks[i][j] != N * N) {//empty block is uncounted
+                if (cur + 1 != blocks[i][j] && blocks[i][j] != EMPTY) {//empty block is uncounted
                     wrongPosition++;
                 }
             }
@@ -68,12 +68,12 @@ public class Board {
         int[][] newBlocks = copyBoard(blocks);
         int i = StdRandom.uniform(N);
         int j = StdRandom.uniform(N);
-        int ii = 0;
-        if (i + 1 == N) ii -= 1;
-        else ii += 1;
+        int jj = 0;
+        if (j + 1 == N) jj -= 1;
+        else jj += 1;
 
-        newBlocks[ii][j] = blocks[i][j];
-        newBlocks[i][j] = blocks[ii][j];
+        newBlocks[i][jj] = blocks[i][j];
+        newBlocks[i][j] = blocks[i][jj];
         return new Board(newBlocks);
     }
 
@@ -175,5 +175,31 @@ public class Board {
             }
         }
         return copy;
+    }
+
+    public static void main(String[] args) {
+        // create initial board from file
+        In in = new In(args[0]);
+        int N = in.readInt();
+        int[][] blocks = new int[N][N];
+        final int EMPTY = 0;
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++) {
+                blocks[i][j] = in.readInt();
+                if(blocks[i][j] == 0) blocks[i][j] = EMPTY;
+            }
+        Board initial = new Board(blocks);
+
+//        // solve the puzzle
+        Solver solver = new Solver(initial);
+//
+//        // print solution to standard output
+        if (!solver.isSolvable())
+            StdOut.println("No solution possible");
+        else {
+            StdOut.println("Minimum number of moves = " + solver.moves());
+            for (Board board : solver.solution())
+                StdOut.println(board);
+        }
     }
 }
