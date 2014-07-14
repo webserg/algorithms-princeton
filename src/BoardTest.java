@@ -48,4 +48,13 @@ public class BoardTest {
         Board board = new Board(blocks);
         Assert.assertEquals(3, board.manhattan());
     }
+
+    @Test
+    public void testNeighbors() {
+        int[][] blocks = new int[][]{{9, 1, 3}, {4, 2, 5}, {7, 8, 6}};
+        Board board = new Board(blocks);
+        Assert.assertEquals(new Board(new int[][]{{1, 9, 3}, {4, 2, 5}, {7, 8, 6}}), board.neighbors().iterator().next());
+    }
+
+
 }

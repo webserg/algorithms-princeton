@@ -8,13 +8,14 @@ import java.util.Iterator;
  */
 public class Board {
     private final int N;
-    private static final int EMPTY = 9;
+    private final int EMPTY;
     private final int[][] blocks;
 
     public Board(final int[][] blocks) {
         N = blocks.length;
-        this.blocks = Arrays.copyOf(blocks, blocks.length);
-    }           // construct a board from an N-by-N array of blocks
+        EMPTY = N * N;
+        this.blocks = copyBoard(blocks);
+    }
 
     // (where blocks[i][j] = block in row i, column j)
     public int dimension() {
@@ -44,7 +45,7 @@ public class Board {
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++) {
                 int cur = seed(i, j);
-                if (cur + 1 != blocks[i][j] && blocks[i][j] != N * N) {
+                if (cur + 1 != blocks[i][j] && blocks[i][j] != EMPTY) {
 //                    System.out.println(blocks[i][j] + " - must=" + (cur+1));
                     int val = blocks[i][j] - 1;
                     int jRight = Math.abs(val % N);
@@ -64,7 +65,7 @@ public class Board {
 
     // a board obtained by exchanging two adjacent blocks in the same row
     public Board twin() {
-        int[][] newBlocks = Arrays.copyOf(blocks, blocks.length);
+        int[][] newBlocks = copyBoard(blocks);
         int i = StdRandom.uniform(N);
         int j = StdRandom.uniform(N);
         int ii = 0;
@@ -80,7 +81,15 @@ public class Board {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        return Arrays.equals(this.blocks, ((Board) o).blocks);
+        int[][] b = ((Board) o).blocks;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (this.blocks[i][j] != b[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -129,7 +138,7 @@ public class Board {
         }
 
         private void addNeighbor(Board searchNode, int iZero, int jZero, int i, int j) {
-            int[][] b = Arrays.copyOf(searchNode.blocks, searchNode.blocks.length);
+            int[][] b = copyBoard(searchNode.blocks);
             b[i][j] = EMPTY;
             b[iZero][jZero] = searchNode.blocks[i][j];
             Board board = new Board(b);
@@ -151,10 +160,20 @@ public class Board {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                stringBuilder.append(this.blocks[i][j] + "\\t");
+                stringBuilder.append(this.blocks[i][j] + " ");
             }
-            stringBuilder.append("\\n");
+            stringBuilder.append("\n");
         }
         return stringBuilder.toString();
+    }
+
+    private int[][] copyBoard(int[][] init) {
+        int[][] copy = new int[N][N];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                copy[i][j] = init[i][j];
+            }
+        }
+        return copy;
     }
 }

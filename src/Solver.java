@@ -8,7 +8,10 @@ import java.util.List;
 public class Solver {
     private final Board initial;
     private boolean isSolvable = false;
+    private boolean isTwinSolvable = false;
     private List<Board> listSolution = new ArrayList<>();
+    private List<Board> prevBoard = new ArrayList<>();
+    private List<Board> prevTwinBoard = new ArrayList<>();
 //    private List<Board> listTwinSolution = new ArrayList<>();
 
     public Solver(Board initial) {
@@ -17,47 +20,35 @@ public class Solver {
             isSolvable = true;
             listSolution.add(initial);
         } else {
-            runAlgorithm();
+            Board board = this.initial;
+            Board twinBoard = this.initial.twin();
+            while (!isSolvable && !isTwinSolvable) {
+                board = runAlgorithmStep(board, prevBoard, false);
+                twinBoard = runAlgorithmStep(twinBoard, prevTwinBoard, true);
+            }
         }
     }
 
     // find a solution to the initial board (using the A* algorithm)
-    private void runAlgorithm() {
-        Board twin = initial.twin();
-        Iterator<Board> initItr = initial.neighbors().iterator();
-        Iterator<Board> twinItr = twin.neighbors().iterator();
-        Board prev = initial;
-        Board prevTwin = twin;
-        while (initItr.hasNext() && twinItr.hasNext()) {
-
-            Board initSearchBoard = initItr.next();
-            Board twinSearchBoard = twinItr.next();
-            listSolution.add(initSearchBoard);
-//            listTwinSolution.add(twinSearchBoard);
-            if (initSearchBoard.isGoal()) {
-                isSolvable = true;
-                return;
-            } else if (twinSearchBoard.isGoal()) {
-                isSolvable = false;
-                return;
-            }
-            initItr = initSearchBoard.neighbors().iterator();
-            removePrev(initItr, prev);
-            prev = initSearchBoard;
-            twinItr = twinSearchBoard.neighbors().iterator();
-            removePrev(twinItr, prevTwin);
-            prevTwin = twinSearchBoard;
+    private Board runAlgorithmStep(final Board board, List<Board> prevBoards, boolean isTwin) {
+        Iterator<Board> initItr = board.neighbors().iterator();
+        Board prev = board;
+        Board searchBoard = initItr.next();
+        while (initItr.hasNext() && prevBoard.contains(searchBoard)) {
+            searchBoard = initItr.next();
         }
+        if (!isTwin) listSolution.add(searchBoard);
+        if (searchBoard.isGoal() && !isTwin) {
+            isSolvable = true;
+            return searchBoard;
+        } else if (searchBoard.isGoal()) {
+            isTwinSolvable = true;
+            return searchBoard;
+        }
+        prevBoards.add(prev);
+        return  searchBoard;
     }
 
-    private void removePrev(Iterator<Board> initItr, Board prev) {
-        while (initItr.hasNext()) {
-            Board cur = initItr.next();
-            if (cur.equals(prev)) {
-                initItr.remove();
-            }
-        }
-    }
 
     public boolean isSolvable() {
         return isSolvable;
