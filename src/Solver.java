@@ -16,15 +16,14 @@ public class Solver {
     public Solver(Board initial) {
         List<Board> prevBoard = new ArrayList<>();
         List<Board> prevTwinBoard = new ArrayList<>();
-        if (initial.isGoal()) {
+        if (initial.isGoal() || initial.dimension() == 0) {
             isSolvable = true;
-//            listSolution.add(initial);
         } else {
             Board board = initial;
             Board twinBoard = initial.twin();
             int i = 0;
             while (!isSolvable && !isTwinSolvable) {
-                if (i > initial.manhattan()) {
+                if (i > initial.manhattan() * 2) {
                     break;
                 }
                 board = runAlgorithmStep(board, prevBoard, false);
@@ -61,17 +60,17 @@ public class Solver {
     }
 
     public int moves() {
-        if (!isSolvable) {
-            for (Board b : listTwinSolution) {
-                System.out.println(b.toString());
-            }
-        }
+//        if (!isSolvable) {
+//            for (Board b : listTwinSolution) {
+//                System.out.println(b.toString());
+//            }
+//        }
         if (isSolvable) return listSolution.size();
         else return -1;
     }                      // min number of moves to solve initial board; -1 if no solution
 
     public Iterable<Board> solution() {
-        if (listSolution.isEmpty()) return null;
+        if (!isSolvable) return null;
         else return listSolution;
     }      // sequence of boards in a shortest solution; null if no solution
 

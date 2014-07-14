@@ -88,8 +88,8 @@ public class Board {
         if (o == null || getClass() != o.getClass()) return false;
         Board that = (Board) o;
         int[][] b = that.blocks;
-        if (N != b.length) return false;
-        if(this.manhattan != that.manhattan()) return false;
+        if (this.dimension() != that.dimension()) return false;
+        if (this.manhattan != that.manhattan()) return false;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 if (this.blocks[i][j] != b[i][j]) {
