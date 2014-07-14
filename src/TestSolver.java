@@ -1,19 +1,47 @@
-import sun.invoke.empty.Empty;
+import junit.framework.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
- * Created by webserg on 10.07.2014.
+ * Created by on 10.07.2014.
  */
 public class TestSolver {
-    public static void main(String[] args) {
+
+    @Test
+    public void testNeighbors() {
+        int[][] blocks = new int[][]{{0, 1, 3}, {4, 2, 5}, {7, 8, 6}};
+        Board board = new Board(blocks);
+        Solver solver = new Solver(board);
+        Assert.assertEquals(4, solver.moves());
+    }
+
+    @Test
+    public void testNeighbors0() {
+        int[][] blocks = new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 0}};
+        Board board = new Board(blocks);
+        Solver solver = new Solver(board);
+        Assert.assertEquals(0, solver.moves());
+    }
+
+    @Test
+    public void testNeighborsUnsolvable() {
+        int[][] blocks = new int[][]{{1, 2, 3}, {4, 5, 6}, {8, 7, 0}};
+        Board board = new Board(blocks);
+        Solver solver = new Solver(board);
+        Assert.assertEquals(-1, solver.moves());
+    }
+
+    @Test
+    public void mainTest() {
         // create initial board from file
-        In in = new In("puzzle-unsolvable3x3.txt");
+        In in = new In("puzzle04.txt");
         int N = in.readInt();
         int[][] blocks = new int[N][N];
         final int EMPTY = 0;
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++) {
                 blocks[i][j] = in.readInt();
-                if(blocks[i][j] == 0) blocks[i][j] = EMPTY;
+                if (blocks[i][j] == 0) blocks[i][j] = EMPTY;
             }
         Board initial = new Board(blocks);
 

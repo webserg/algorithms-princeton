@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 
@@ -10,11 +9,13 @@ public class Board {
     private final int N;
     private final int EMPTY;
     private final int[][] blocks;
+    private final int manhattan;
 
     public Board(final int[][] blocks) {
         N = blocks.length;
         EMPTY = 0;
         this.blocks = copyBoard(blocks);
+        manhattan = wrongPositionByManhattan();
     }
 
     // (where blocks[i][j] = block in row i, column j)
@@ -32,45 +33,49 @@ public class Board {
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++) {
                 int cur = seed(i, j);
-                if (cur + 1 != blocks[i][j] && blocks[i][j] != EMPTY) {//empty block is uncounted
+                if (cur + 1 != blocks[i][j] && blocks[i][j] != EMPTY) {
                     wrongPosition++;
                 }
             }
         return wrongPosition;
-    }                   // number of blocks out of place
+    }
 
     public int manhattan() {
+        return manhattan;
+    }
 
+    private int wrongPositionByManhattan() {
         int wrongPosition = 0;
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++) {
                 int cur = seed(i, j);
                 if (cur + 1 != blocks[i][j] && blocks[i][j] != EMPTY) {
-//                    System.out.println(blocks[i][j] + " - must=" + (cur+1));
                     int val = blocks[i][j] - 1;
                     int jRight = Math.abs(val % N);
                     int iRight = Math.abs(val - jRight) / N;
                     int pos = Math.abs(i - iRight) + Math.abs(j - jRight);
-//                    System.out.println(blocks[i][j] + " - pos=" + pos);
                     wrongPosition += pos;
                 }
             }
         return wrongPosition;
-    }                 // sum of Manhattan distances between blocks and goal
+    }
 
     public boolean isGoal() {
-        return hamming() == 0;
+        return manhattan == 0;
     }
 
 
     // a board obtained by exchanging two adjacent blocks in the same row
     public Board twin() {
         int[][] newBlocks = copyBoard(blocks);
-        int i = StdRandom.uniform(N);
-        int j = StdRandom.uniform(N);
-        int jj = 0;
-        if (j + 1 == N) jj -= 1;
-        else jj += 1;
+        int i, j;
+        int jj;
+        do {
+            i = StdRandom.uniform(dimension());
+            j = StdRandom.uniform(dimension());
+            if (j + 1 == N) jj = j - 1;
+            else jj = j + 1;
+        } while (blocks[i][j] == EMPTY || blocks[i][jj] == EMPTY);
 
         newBlocks[i][jj] = blocks[i][j];
         newBlocks[i][j] = blocks[i][jj];
@@ -81,7 +86,10 @@ public class Board {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        int[][] b = ((Board) o).blocks;
+        Board that = (Board) o;
+        int[][] b = that.blocks;
+        if (N != b.length) return false;
+        if(this.manhattan != that.manhattan()) return false;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 if (this.blocks[i][j] != b[i][j]) {
@@ -92,25 +100,19 @@ public class Board {
         return true;
     }
 
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(this.blocks);
-    }
-
-    //
-//    public boolean equals(Object y)        // does this board equal y?
-//
-    class BoardComparator implements Comparator<Board> {
+    private class BoardComparator implements Comparator<Board> {
         @Override
         public int compare(Board o1, Board o2) {
-            return o1.manhattan() < o2.manhattan() ? -1 : o1.manhattan() > o2.manhattan() ? 1 : 0;
+            if (o1.manhattan() < o2.manhattan()) return -1;
+            else if (o1.manhattan() > o2.manhattan()) return 1;
+            else return 0;
         }
     }
 
 
-    class BoardQ implements Iterable<Board> {
+    private class BoardQ implements Iterable<Board> {
 
-        MinPQ<Board> neighbors = new MinPQ<>(4, new BoardComparator());
+        private MinPQ<Board> neighbors = new MinPQ<>(4, new BoardComparator());
 
         BoardQ(Board searchNode) {
             int n = searchNode.N;
@@ -158,9 +160,14 @@ public class Board {
 
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(N);
+        stringBuilder.append("\n");
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                stringBuilder.append(this.blocks[i][j] + " ");
+                if (this.blocks[i][j] < 10)
+                    stringBuilder.append("  ");
+                else stringBuilder.append(" ");
+                stringBuilder.append(this.blocks[i][j]);
             }
             stringBuilder.append("\n");
         }
@@ -168,11 +175,9 @@ public class Board {
     }
 
     private int[][] copyBoard(int[][] init) {
-        int[][] copy = new int[N][N];
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                copy[i][j] = init[i][j];
-            }
+        int[][] copy = new int[dimension()][dimension()];
+        for (int i = 0; i < dimension(); i++) {
+            System.arraycopy(init[i], 0, copy[i], 0, dimension());
         }
         return copy;
     }
@@ -182,11 +187,9 @@ public class Board {
         In in = new In(args[0]);
         int N = in.readInt();
         int[][] blocks = new int[N][N];
-        final int EMPTY = 0;
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++) {
                 blocks[i][j] = in.readInt();
-                if(blocks[i][j] == 0) blocks[i][j] = EMPTY;
             }
         Board initial = new Board(blocks);
 
@@ -194,9 +197,10 @@ public class Board {
         Solver solver = new Solver(initial);
 //
 //        // print solution to standard output
-        if (!solver.isSolvable())
+        if (!solver.isSolvable()) {
             StdOut.println("No solution possible");
-        else {
+//            StdOut.println("Minimum number of moves = " + solver.moves());
+        } else {
             StdOut.println("Minimum number of moves = " + solver.moves());
             for (Board board : solver.solution())
                 StdOut.println(board);
