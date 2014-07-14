@@ -22,9 +22,14 @@ public class Solver {
         } else {
             Board board = initial;
             Board twinBoard = initial.twin();
+            int i = 0;
             while (!isSolvable && !isTwinSolvable) {
+                if (i > initial.manhattan()) {
+                    break;
+                }
                 board = runAlgorithmStep(board, prevBoard, false);
                 twinBoard = runAlgorithmStep(twinBoard, prevTwinBoard, true);
+                i++;
             }
         }
     }
@@ -56,6 +61,11 @@ public class Solver {
     }
 
     public int moves() {
+        if (!isSolvable) {
+            for (Board b : listTwinSolution) {
+                System.out.println(b.toString());
+            }
+        }
         if (isSolvable) return listSolution.size();
         else return -1;
     }                      // min number of moves to solve initial board; -1 if no solution
