@@ -183,33 +183,6 @@ public class Board {
     }
 
     public static void main(String[] args) {
-        runSolver(args[0]);
-    }
-
-    static int runSolver(String fileName) {
-        // create initial board from file
-        int res=-1;
-        In in = new In(fileName);
-        int N = in.readInt();
-        int[][] blocks = new int[N][N];
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++) {
-                blocks[i][j] = in.readInt();
-            }
-        Board initial = new Board(blocks);
-
-//        // solve the puzzle
-        Solver solver = new Solver(initial);
-//
-//        // print solution to standard output
-        if (!solver.isSolvable())
-            StdOut.println("No solution possible");
-        else {
-            res = solver.moves();
-            StdOut.println("Minimum number of moves = " + res);
-            for (Board board : solver.solution())
-                StdOut.println(board);
-        }
-        return res;
+//        runSolver(args[0]);
     }
 }

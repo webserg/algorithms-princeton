@@ -24,7 +24,7 @@ public class Solver {
             Board twinBoard = initial.twin();
             int i = 0;
             while (!isSolvable && !isTwinSolvable) {
-                if (i > (initial.dimension() + 2) * 500) {
+                if (i > (initial.dimension() + 1) * 100) {
                     break;
                 }
                 board = runAlgorithmStep(board, prevBoard, false);
@@ -78,6 +78,33 @@ public class Solver {
     }      // sequence of boards in a shortest solution; null if no solution
 
     public static void main(String[] args) {
+        runSolver(args[0]);
+    }
 
+    private static int runSolver(String fileName) {
+        // create initial board from file
+        int res=-1;
+        In in = new In(fileName);
+        int N = in.readInt();
+        int[][] blocks = new int[N][N];
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++) {
+                blocks[i][j] = in.readInt();
+            }
+        Board initial = new Board(blocks);
+
+//        // solve the puzzle
+        Solver solver = new Solver(initial);
+//
+//        // print solution to standard output
+        if (!solver.isSolvable())
+            StdOut.println("No solution possible");
+        else {
+            res = solver.moves();
+            StdOut.println("Minimum number of moves = " + res);
+            for (Board board : solver.solution())
+                StdOut.println(board);
+        }
+        return res;
     }
 }

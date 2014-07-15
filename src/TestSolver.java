@@ -33,30 +33,29 @@ public class TestSolver {
 
     @Test
     public void mainTest() {
-        Board.runSolver("puzzle04.txt");
+        Solver.main(new String[]{"puzzle04.txt"});
     }
 
     @Test
     public void mainTestPuzzle01() {
-        Board.runSolver("puzzle01.txt");
+        Solver.main(new String[]{"puzzle01.txt"});
 
     }
 
     @Test
     public void mainTestPuzzle02() {
-        Board.runSolver("puzzle02.txt");
+        Solver.main(new String[]{"puzzle02.txt"});
 
     }
 
     @Test
     public void mainTestPuzzle03() {
-        Board.runSolver("puzzle03.txt");
+        Solver.main(new String[]{"puzzle03.txt"});
 
     }
 
     @Test
     public void mainTestPuzzle10() {
-        Assert.assertEquals(10,Board.runSolver("puzzle10.txt"));
-
+        Solver.main(new String[]{"puzzle10.txt"});
     }
 }
