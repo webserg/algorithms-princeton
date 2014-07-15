@@ -60,14 +60,14 @@ public class Solver {
 
     public int moves() {
         if (isSolvable) {
-            for (Board b : listSolution) {
-                System.out.println(b.toString());
-            }
+//            for (Board b : listSolution) {
+//                System.out.println(b.toString());
+//            }
             if (listSolution.size() == 0) return 0;
             else return listSolution.size() - 1;
         } else {
-            if (listSolution != null && listSolution.size() > 1)
-                System.out.println(listSolution.get(0).toString());
+//            if (listSolution != null && listSolution.size() > 1)
+//                System.out.println(listSolution.get(0).toString());
             return -1;
         }
     }                      // min number of moves to solve initial board; -1 if no solution

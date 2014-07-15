@@ -33,28 +33,30 @@ public class TestSolver {
 
     @Test
     public void mainTest() {
-        // create initial board from file
-        In in = new In("puzzle04.txt");
-        int N = in.readInt();
-        int[][] blocks = new int[N][N];
-        final int EMPTY = 0;
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++) {
-                blocks[i][j] = in.readInt();
-                if (blocks[i][j] == 0) blocks[i][j] = EMPTY;
-            }
-        Board initial = new Board(blocks);
+        Board.runSolver("puzzle04.txt");
+    }
 
-//        // solve the puzzle
-        Solver solver = new Solver(initial);
-//
-//        // print solution to standard output
-        if (!solver.isSolvable())
-            StdOut.println("No solution possible");
-        else {
-            StdOut.println("Minimum number of moves = " + solver.moves());
-            for (Board board : solver.solution())
-                StdOut.println(board);
-        }
+    @Test
+    public void mainTestPuzzle01() {
+        Board.runSolver("puzzle01.txt");
+
+    }
+
+    @Test
+    public void mainTestPuzzle02() {
+        Board.runSolver("puzzle02.txt");
+
+    }
+
+    @Test
+    public void mainTestPuzzle03() {
+        Board.runSolver("puzzle03.txt");
+
+    }
+
+    @Test
+    public void mainTestPuzzle10() {
+        Assert.assertEquals(10,Board.runSolver("puzzle10.txt"));
+
     }
 }
