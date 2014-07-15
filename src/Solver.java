@@ -16,6 +16,7 @@ public class Solver {
     public Solver(Board initial) {
         List<Board> prevBoard = new ArrayList<>();
         List<Board> prevTwinBoard = new ArrayList<>();
+        listSolution.add(initial);
         if (initial.isGoal() || initial.dimension() == 0) {
             isSolvable = true;
         } else {
@@ -23,7 +24,7 @@ public class Solver {
             Board twinBoard = initial.twin();
             int i = 0;
             while (!isSolvable && !isTwinSolvable) {
-                if (i > initial.manhattan() * 2) {
+                if (i > (initial.dimension() + 2) * 500) {
                     break;
                 }
                 board = runAlgorithmStep(board, prevBoard, false);
@@ -42,11 +43,9 @@ public class Solver {
         }
         if (!isTwin) listSolution.add(searchBoard);
         else listTwinSolution.add(searchBoard);
-        if (searchBoard.isGoal() && !isTwin) {
-            isSolvable = true;
-            return searchBoard;
-        } else if (searchBoard.isGoal()) {
-            isTwinSolvable = true;
+        if (searchBoard.isGoal()) {
+            if (!isTwin) isSolvable = true;
+            else isTwinSolvable = true;
             return searchBoard;
         }
         prevBoards.clear();
@@ -60,13 +59,17 @@ public class Solver {
     }
 
     public int moves() {
-//        if (!isSolvable) {
-//            for (Board b : listTwinSolution) {
-//                System.out.println(b.toString());
-//            }
-//        }
-        if (isSolvable) return listSolution.size();
-        else return -1;
+        if (isSolvable) {
+            for (Board b : listSolution) {
+                System.out.println(b.toString());
+            }
+            if (listSolution.size() == 0) return 0;
+            else return listSolution.size() - 1;
+        } else {
+            if (listSolution != null && listSolution.size() > 1)
+                System.out.println(listSolution.get(0).toString());
+            return -1;
+        }
     }                      // min number of moves to solve initial board; -1 if no solution
 
     public Iterable<Board> solution() {

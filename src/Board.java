@@ -144,8 +144,8 @@ public class Board {
             b[i][j] = EMPTY;
             b[iZero][jZero] = searchNode.blocks[i][j];
             Board board = new Board(b);
-//            if(!Board.this.equals(board))
-            neighbors.insert(board);
+            if (!Board.this.equals(board))
+                neighbors.insert(board);
         }
 
         @Override
